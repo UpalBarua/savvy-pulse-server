@@ -27,8 +27,16 @@ const run = async () => {
       .db('savvy-pulse')
       .collection('categories');
 
+    const productsCollection = client.db('savvy-pulse').collection('products');
+
     app.get('/categories', async (req, res) => {
       const response = await categoriesCollection.find({}).toArray();
+      res.json(response);
+    });
+
+    app.get('/categories/:type', async (req, res) => {
+      const type = req.params.type;
+      const response = await productsCollection.find({ type: type }).toArray();
       res.json(response);
     });
   } finally {
