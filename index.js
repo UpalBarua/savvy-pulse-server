@@ -28,6 +28,7 @@ const run = async () => {
       .collection('categories');
 
     const productsCollection = client.db('savvy-pulse').collection('products');
+    const usersCollection = client.db('savvy-pulse').collection('users');
 
     app.get('/categories', async (req, res) => {
       const response = await categoriesCollection.find({}).toArray();
@@ -37,6 +38,11 @@ const run = async () => {
     app.get('/categories/:type', async (req, res) => {
       const type = req.params.type;
       const response = await productsCollection.find({ type: type }).toArray();
+      res.json(response);
+    });
+
+    app.post('/user/new', async (req, res) => {
+      const response = await usersCollection.insertOne(req.body);
       res.json(response);
     });
   } finally {
