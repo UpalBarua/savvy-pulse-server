@@ -41,6 +41,13 @@ const run = async () => {
       res.json(response);
     });
 
+    app.get('/my-products/wishlist', async (req, res) => {
+      const response = await productsCollection
+        .find({ isWishListed: true })
+        .toArray();
+      res.json(response);
+    });
+
     app.post('/products/new', async (req, res) => {
       const newProduct = req.body;
       const response = await productsCollection.insertOne(newProduct);
