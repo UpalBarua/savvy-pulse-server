@@ -35,15 +35,28 @@ const run = async () => {
       res.json(response);
     });
 
-    app.get('/categories/:type', async (req, res) => {
+    app.get('/products/:type', async (req, res) => {
       const type = req.params.type;
       const response = await productsCollection.find({ type: type }).toArray();
       res.json(response);
     });
 
-    app.post('/user/new', async (req, res) => {
-      const response = await usersCollection.insertOne(req.body);
+    app.post('/products/new', async (req, res) => {
+      const newProduct = req.body;
+      const response = await productsCollection.insertOne(newProduct);
       res.json(response);
+    });
+
+    app.post('/user/new', async (req, res) => {
+      const newUser = req.body;
+      const response = await usersCollection.insertOne(newUser);
+      res.json(response);
+    });
+
+    app.get('/user/type/:email', async (req, res) => {
+      const email = req.params.email;
+      const response = await usersCollection.findOne({ email: email });
+      res.json(response.type);
     });
   } finally {
   }
