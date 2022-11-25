@@ -73,6 +73,14 @@ const run = async () => {
       res.json(response);
     });
 
+    app.delete('/my-products/delete/:id', async (req, res) => {
+      const id = req.params.id;
+      const response = await productsCollection.deleteOne({
+        _id: ObjectId(id),
+      });
+      res.json(response);
+    });
+
     app.patch('/my-products/advertisements/:id', async (req, res) => {
       const id = req.params.id;
       const product = await productsCollection.findOne({ _id: ObjectId(id) });
