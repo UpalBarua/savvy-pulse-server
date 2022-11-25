@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -44,6 +44,32 @@ const run = async () => {
     app.post('/products/new', async (req, res) => {
       const newProduct = req.body;
       const response = await productsCollection.insertOne(newProduct);
+      res.json(response);
+    });
+
+    app.get('/my-products/:email', async (req, res) => {
+      const email = req.params.email;
+      const response = await productsCollection
+        .find({ seller: email })
+        .toArray();
+      res.json(response);
+    });
+
+    app.patch('/my-products/sell/:id', async (req, res) => {
+      const id = req.params.id;
+      const product = await productsCollection.findOne({ _id: ObjectId(id) });
+
+      const updatedDoc = {
+        $set: {
+          isAvailable: !product.isAvailable,
+        },
+      };
+
+      const response = await productsCollection.updateOne(
+        { _id: ObjectId(id) },
+        updatedDoc
+      );
+
       res.json(response);
     });
 
