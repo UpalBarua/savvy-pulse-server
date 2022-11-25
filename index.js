@@ -124,6 +124,24 @@ const run = async () => {
       });
       res.json(response);
     });
+
+    app.patch('/user/verify/:id', async (req, res) => {
+      const id = req.params.id;
+      const seller = await usersCollection.findOne({ _id: ObjectId(id) });
+
+      const updatedDoc = {
+        $set: {
+          isVerified: !seller.isVerified,
+        },
+      };
+
+      const response = await usersCollection.updateOne(
+        { _id: ObjectId(id) },
+        updatedDoc
+      );
+
+      res.json(response);
+    });
   } finally {
   }
 };
