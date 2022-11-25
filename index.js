@@ -110,6 +110,20 @@ const run = async () => {
       const response = await usersCollection.findOne({ email: email });
       res.json(response.type);
     });
+
+    app.get('/user/all/', async (req, res) => {
+      const type = req.query.type;
+      const response = await usersCollection.find({ type: type }).toArray();
+      res.json(response);
+    });
+
+    app.delete('/user/delete/:id', async (req, res) => {
+      const id = req.params.id;
+      const response = await usersCollection.deleteOne({
+        _id: ObjectId(id),
+      });
+      res.json(response);
+    });
   } finally {
   }
 };
