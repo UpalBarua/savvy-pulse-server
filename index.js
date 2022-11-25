@@ -149,6 +149,24 @@ const run = async () => {
 
       res.json(response);
     });
+
+    app.patch('/my-products/wishlist/new/:id', async (req, res) => {
+      const id = req.params.id;
+      const product = await productsCollection.findOne({ _id: ObjectId(id) });
+
+      const updatedDoc = {
+        $set: {
+          isWishListed: !product.isWishListed,
+        },
+      };
+
+      const response = await productsCollection.updateOne(
+        { _id: ObjectId(id) },
+        updatedDoc
+      );
+
+      res.json(response);
+    });
   } finally {
   }
 };
