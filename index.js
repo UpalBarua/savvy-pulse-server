@@ -73,6 +73,24 @@ const run = async () => {
       res.json(response);
     });
 
+    app.patch('/my-products/advertisements/:id', async (req, res) => {
+      const id = req.params.id;
+      const product = await productsCollection.findOne({ _id: ObjectId(id) });
+
+      const updatedDoc = {
+        $set: {
+          isAdvertised: !product.isAdvertised,
+        },
+      };
+
+      const response = await productsCollection.updateOne(
+        { _id: ObjectId(id) },
+        updatedDoc
+      );
+
+      res.json(response);
+    });
+
     app.post('/user/new', async (req, res) => {
       const newUser = req.body;
       const response = await usersCollection.insertOne(newUser);
