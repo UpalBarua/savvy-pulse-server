@@ -49,9 +49,15 @@ const run = async () => {
 
     const productsCollection = client.db('savvy-pulse').collection('products');
     const usersCollection = client.db('savvy-pulse').collection('users');
+    const blogCollection = client.db('savvy-pulse').collection('blog');
 
     app.get('/categories', async (req, res) => {
       const response = await categoriesCollection.find({}).toArray();
+      res.json(response);
+    });
+
+    app.get('/blog', async (req, res) => {
+      const response = await blogCollection.find({}).toArray();
       res.json(response);
     });
 
@@ -200,7 +206,6 @@ const run = async () => {
       const response = await usersCollection.findOne({ email: email });
 
       if (response?.email) {
-        console.log(response);
         const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, {
           expiresIn: '1h',
         });
