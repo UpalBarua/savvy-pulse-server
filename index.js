@@ -3,23 +3,42 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const port = process.env.PORT || 3000;
 const jwt = require('jsonwebtoken');
+const port = process.env.PORT || 3000;
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('SavvyPulse server running...');
-});
+const verifyJWT = (req, res, next) => {
+  const requestHeaders = req.headers.authorization;
+
+  if (!requestHeaders) {
+    res.status(401).send('unauthorized access');
+  }
+
+  const token = requestHeaders.split(' ')[1];
+
+  jwt.verify(token, process.env.ACCESS_TOKEN, (error, decoded) => {
+    if (error) {
+      res.status(403).send({ message: 'forbidden access' });
+    }
+
+    req.decoded = decoded;
+    next();
+  });
+};
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.4w0vbzl.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
+});
+
+app.get('/', (req, res) => {
+  res.send('SavvyPulse server running...');
 });
 
 const run = async () => {
