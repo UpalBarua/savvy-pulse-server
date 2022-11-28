@@ -57,7 +57,7 @@ const run = async () => {
       res.json(response);
     });
 
-    app.get('/orders', async (req, res) => {
+    app.get('/orders', verifyJWT, async (req, res) => {
       const email = req.query.email;
       const response = await ordersCollection.find({ email: email }).toArray();
       res.json(response);
@@ -74,20 +74,20 @@ const run = async () => {
       res.json(response);
     });
 
-    app.get('/products/:type', async (req, res) => {
+    app.get('/products/:type', verifyJWT, async (req, res) => {
       const type = req.params.type;
       const response = await productsCollection.find({ type: type }).toArray();
       res.json(response);
     });
 
-    app.get('/my-products/wishlist', async (req, res) => {
+    app.get('/my-products/wishlist', verifyJWT, async (req, res) => {
       const response = await productsCollection
         .find({ isWishListed: true })
         .toArray();
       res.json(response);
     });
 
-    app.get('/my-products/advertised', async (req, res) => {
+    app.get('/my-products/advertised', verifyJWT, async (req, res) => {
       const response = await productsCollection
         .find({ isAdvertised: true })
         .toArray();
@@ -164,7 +164,7 @@ const run = async () => {
       res.json(response.type);
     });
 
-    app.get('/user/all/', async (req, res) => {
+    app.get('/user/all/', verifyJWT, async (req, res) => {
       const type = req.query.type;
       const response = await usersCollection.find({ type: type }).toArray();
       res.json(response);
@@ -194,6 +194,12 @@ const run = async () => {
       );
 
       res.json(response);
+    });
+
+    app.get('/user/seller/verify/:email', async (req, res) => {
+      const email = req.params.email;
+      const response = await usersCollection.findOne({ email: email });
+      res.send(response?.isVerified);
     });
 
     app.patch('/my-products/wishlist/new/:id', async (req, res) => {
